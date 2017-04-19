@@ -1,0 +1,198 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link href="https://fonts.googleapis.com/css?family=Rubik+Mono+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
+
+<dom-module id="profile-info">
+  <template>
+
+    <style include="shared-styles">
+#welcome{
+  text-align: center;
+}
+#header{
+  text-align: center;
+  font-size: 300%;
+  color: white;
+  font-family: 'Rubik Mono One', sans-serif;
+}
+#picture{
+  position: relative;
+  margin: auto;
+  left: 45%;
+  padding: 10px;
+}
+#dialog1 {
+
+  width: 40em;
+
+}
+#edit_prof {
+  text-align: center;
+}
+#profpic {
+border-radius: 50%;
+margin: auto;
+
+}
+.centerim {
+  margin: auto;
+     width: 50%;
+
+     padding: 10px;
+}
+#profinfo {
+   border: 3px solid green;
+}
+#profilecard
+{
+  background-color: #001f3f;
+  color: white;
+  font-family: 'Oxygen', sans-serif;
+
+}
+#modal {
+  background-color:white;
+  color: black;
+}
+    </style>
+
+    <div id ="profilecard" class="card">
+
+      <h1 id ="header"><b><u>My Profile</u><b></h1>
+        <div class="centerim"><img id ="profpic" src ={{picture_ref}} align="middle" alt="Please Insert Profile Picture"></div>
+<div><h1 id ="welcome">Welcome: {{name}}</h1></div>
+  <div class="centerim" id="profinfo">
+      <h2><u>Profile Information</u></h2>
+      <ul>
+        <li>Name: {{name}} {{lastname}}</li>
+        <li>Teams:
+        <template is="dom-repeat" items="{{teams}}">
+           <ul><span>{{item}}</span></ul>
+       </template>
+     </li>
+     <li>Date of Birth: {{dob}}</li>
+     <li>Email: {{email}}</li>
+      </ul>
+      <paper-button id ="modal" class="centerim"  raised trigger-for="dialog1" on-click="_openDialogByTrigger">Edit Profile</paper-button>
+    </div>
+
+
+
+ <paper-dialog  id="dialog1">
+   <h2 id="edit_prof"><u>Edit Profile</u></h2>
+   <form is="iron-form" on-iron-form-respone="formResponse" id="edituser" method="post" action="/api/edituser">
+     <paper-input name = "first_name" label="First Name" value={{name}} required></paper-input>
+     <paper-input name="last_name" label="Last Name" value={{lastname}} required></paper-input>
+     <paper-input name="dob" type="date" label="Date of Birth" value={{dob}} required></paper-input>
+     <paper-input name="email" label="Email" value={{email}} required auto-validate></paper-input>
+<br>
+  <paper-button raised onclick="_submit(event)">Save Changes</paper-button>
+
+   </form>
+
+
+ </paper-dialog>
+
+
+    </div>
+
+
+<div>
+    <iron-ajax auto
+            id="requestRepos"
+            url="http://localhost:3000/api/getprofile"
+            handle-as="json"
+            on-response = "handleResponse"
+        </iron-ajax>
+</div>
+
+<script>
+function _submit(event) {
+Polymer.dom(event).localTarget.parentElement.submit();
+}
+</script>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'profile-info',
+      _openDialogByTrigger: function(event) {
+          var dialogId = event.target.getAttribute('trigger-for');
+          // get dialog by id in the shadow root
+          var dialog = this.$[dialogId];
+          dialog.open();
+      },
+      formResponse: function(res)
+      {
+        console.log(res);
+      },
+
+
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+
+        name: String,
+        lastname: String,
+        dob: String,
+        email: String,
+        picture_ref: String,
+        teams: []
+      },
+
+        ready: function ()
+        {
+             console.log("in ready function");
+           this.$.requestRepos.generateRequest();
+
+          //    console.log("After request ");
+            //  console.log(z);
+         },
+
+       handleResponse: function (data)
+       {
+                       console.log("got the response!");
+
+                       var x = data.detail.response;
+                     console.log(x);
+                       var name = x.first_name;
+                      console.log(name);
+                  //     console.log(this);
+                  this.name = name;
+                  this.lastname = x.last_name;
+                  this.dob = x.dob;
+                  this.email = x.email;
+                  this.teams = x.team_ids;
+                  this.picture_ref = x.picture_ref;
+                  console.log(this.teams);
+         },
+
+
+
+    });
+
+
+
+  </script>
+</dom-module>

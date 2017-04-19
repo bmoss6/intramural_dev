@@ -1,0 +1,86 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+ <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+ <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="profile_info.html">
+<link rel="import" href="team-info.html">
+<link rel="import" href="season-info.html">
+<link rel="import" href="tournament-info.html">
+<link rel="import" href="rules-info.html">
+<dom-module id="my-supervisor">
+  <template>
+    <style include="shared-styles">
+
+    </style>
+
+    <paper-tabs selected={{selected}}>
+           <paper-tab>My Profile</paper-tab>
+           <paper-tab>My Teams</paper-tab>
+           <paper-tab>My Seasons</paper-tab>
+           <paper-tab>My Tournaments</paper-tab>
+           <paper-tab>My Rules</paper-tab>
+          <a href ='/logout'>  <paper-tab>Logout</paper-tab></a>
+            <paper-tab>Supervisor Portal</paper-tab>
+          </paper-tabs>
+          <iron-pages selected={{selected}}>
+       <div>
+         <profile-info></profile-info>
+       </div>
+       <div>
+         <team-info></team-info>
+       </div>
+       <div>
+         <season-info></season-info>
+       </div>
+       <div>
+         <tournament-info></tournament-info>
+       </div>
+       <div>
+         <rules-info></rules-info>
+       </div>
+      </iron-pages>
+
+
+
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-supervisor',
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+        name: String
+      },
+      created: function() {
+      //  console.log("Created!!");
+
+      },
+        ready: function ()
+        {
+
+         },
+
+       handleResponse: function (data)
+       {
+
+         }
+
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"intramural_dev.Users"},{"v":1,"unique":true,"key":{"netid":1},"name":"netid","ns":"intramural_dev.Users"}]}

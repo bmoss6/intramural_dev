@@ -1,0 +1,100 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<dom-module id="tournament-info">
+  <template>
+    <style include="shared-styles">
+#welcome{
+  text-align: center;
+}
+#header{
+  text-align: center;
+  font-size: 300%;
+}
+#picture{
+  position: relative;
+  margin: auto;
+  left: 45%;
+  padding: 10px;
+}
+    </style>
+
+    <div class="card">
+
+      <h1 id ="header"><b>My Teams<b></h1>
+          <div  id="picture" class="circle">1</div>
+<div><h1 id ="welcome">Welcome: {{name}}</h1></div>
+      <h2><u>Teams</u></h2>
+      <ul>
+        <li>Name: {{name}} {{lastname}}</li>
+        <li>Teams:
+        <template is="dom-repeat" items="{{teams}}">
+           <ul><span>{{item}}</span></ul>
+       </template>
+     </li>
+      </ul>
+    </div>
+
+
+<div>
+    <iron-ajax auto
+            id="requestRepos"
+            url="http://localhost:3000/api/getprofile"
+            handle-as="json"
+            on-response = "handleResponse"
+        </iron-ajax>
+</div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'tournament-info',
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+        name: String,
+        lastname: String,
+        teams: []
+      },
+
+        ready: function ()
+        {
+             console.log("in ready function");
+           this.$.requestRepos.generateRequest();
+
+          //    console.log("After request ");
+            //  console.log(z);
+         },
+
+       handleResponse: function (data)
+       {
+                       console.log("got the response!");
+
+                       var x = data.detail.response;
+                     console.log(x);
+                       var name = x.first_name;
+                      console.log(name);
+                  //     console.log(this);
+                  this.name = name;
+                  this.lastname = x.last_name;
+
+                  this.teams = x.team_ids;
+                  console.log(this.teams);
+         }
+
+    });
+  </script>
+</dom-module>

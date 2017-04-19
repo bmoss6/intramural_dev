@@ -8,6 +8,15 @@
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test"
+    "test": "npm run lint && polymer test",
+    "start": "concurrently --kill-others \"node server.js\" \"polymer serve\""
+  },
+  "dependencies": {
+    "concurrently": "^3.4.0",
+    "connect-flash": "^0.1.1",
+    "crypto": "0.0.3",
+    "ejs-locals": "^1.0.2",
+    "mongodb": "^2.2.25",
+    "mongoose": "^4.9.3"
   }
 }

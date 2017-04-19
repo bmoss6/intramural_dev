@@ -1,0 +1,318 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+ <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+ <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link href="https://fonts.googleapis.com/css?family=Rubik+Mono+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<dom-module id="my-supervisor">
+  <template>
+    <style include="shared-styles">
+#welcome{
+  text-align: center;
+}
+#header{
+  text-align: center;
+  font-size: 300%;
+}
+#season{
+  text-align: center;
+
+}
+#picture{
+  position: relative;
+  margin: auto;
+  left: 45%;
+  padding: 10px;
+}
+#validate {
+  display: none;
+}
+.centerim {
+  margin: auto;
+     width: 50%;
+
+     padding: 10px;
+}
+table, th, td {
+   border: 1px solid black;
+}
+ul{
+    font-family: 'Oxygen', sans-serif;
+    font-size: 1.2em; /* 30px/16=1.875em */
+}
+#teamheader
+{
+  font-size: 1.5em; /* 30px/16=1.875em */
+}
+#roster_head
+{
+  text-align: center;
+}
+#teamp{
+  background-color: #d3d3d3;
+}
+#rost{
+  background-color: white;
+}
+    </style>
+
+    <div id = "teamp" class="card">
+
+      <h1 id ="header"><b>My Supervisor<b></h1>
+        <h2 id="season">{{cur_season}}</h2>
+        <paper-tabs selected={{selected}}>
+          <paper-tab>User Report</paper-tab>
+          <paper-tab>Team Report</paper-tab>
+          <paper-tab>Game Report</paper-tab>
+          <paper-tab>Tournament Report</paper-tab>
+     </paper-tabs>
+     <iron-pages selected={{selected}} >
+     <div>
+       <h2> User List</h2>
+       <table>
+       <tr>
+<th>Net ID</th>
+<th>First Name</th>
+<th>Last Name</th>
+<th>Date of Birth</th>
+<th>Email</th>
+</tr>
+     <template is="dom-repeat" items="{{users}}">
+       <tr>
+        <td>{{item.netid}}</td>
+       <td>{{item.first_name}}</td>
+       <td>{{item.last_name}}</td>
+       <td>{{item.dob}}</td>
+       <td>{{item.email}}</td>
+       <tr>
+     </template>
+ </table>
+     </div>
+     <div>
+     <h2> Team List</h2>
+     <table>
+     <tr>
+
+<th>Team ID</th>
+<th>Team Name</th>
+<th>Sport</th>
+<th>Division</th>
+<th>Category</th>
+<th>Wins</th>
+<th>Loss</th>
+<th>Ranking</th>
+<th>Captains</th>
+
+</tr>
+   <template is="dom-repeat" items="{{teams}}">
+     <tr>
+     <td>{{item.teamid}}</td>
+     <td>{{item.teamname}}</td>
+     <td>{{item.sport}}</td>
+     <td>{{item.division}}</td>
+      <td>{{item.category}}</td>
+       <td>{{item.win}}</td>
+        <td>{{item.loss}}</td>
+         <td>{{item.ranking}}</td>
+          <td>{{item.captains}}</td>
+     <tr>
+   </template>
+</table>
+</div>
+<div>
+<h2> Game List</h2>
+<table>
+<tr>
+<th>Game ID</th>
+<th>Away Team</th>
+<th>Home Team</th>
+<th>Date</th>
+<th>Time</th>
+<th>Field</th>
+<th>Division</th>
+<th>Sport</th>
+<th>Supervisor</th>
+
+</tr>
+<template is="dom-repeat" items="{{games}}">
+<tr>
+<td>{{item.game_id}}</td>
+<td>{{item.away_team}}</td>
+<td>{{item.home_team}}</td>
+<td>{{item.date}}</td>
+ <td>{{item.time}}</td>
+  <td>{{item.field_id}}</td>
+  <td>{{item.division}}</td>
+   <td>{{item.sport}}</td>
+  <td>{{item.supervisor_id}}</td>
+
+<tr>
+</template>
+</table>
+</div>
+     <div>
+
+     </div>
+      </iron-pages>
+
+    </div>
+
+
+<div>
+    <iron-ajax auto
+            id="requestRepos"
+            url="http://localhost:3000/api/getTeam"
+            handle-as="json"
+            on-response = "handleResponse"
+        </iron-ajax>
+
+</div>
+<script>
+function _submit(event) {
+Polymer.dom(event).localTarget.parentElement.submit();
+}
+</script>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-supervisor',
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+        name: String,
+        id: String,
+        lastname: String,
+        rosters: [],
+        teamandroster: [],
+        cur_season: String,
+        real_season: String,
+        games: [],
+        users: [],
+        teams: []
+      },
+
+
+
+        ready: function ()
+        {
+
+           console.log("in ready function");
+           this.$.requestRepos.generateRequest();
+
+         },
+         validate: function (info)
+         {
+           console.err(info);
+         },
+
+       handleResponse: function (data)
+       {
+          console.log("got the teams!");
+          console.log(data.detail.response);
+          console.log("Here should be the rosters");
+          console.log(data.detail.response.final_rosters1);
+          this.teams = data.detail.response.finishedstuff;
+          this.rosters = data.detail.response.final_rosters1;
+          var fallstring = data.detail.response.cur_season;
+          this.real_season = fallstring;
+          var season = fallstring.substring(0,1);
+          var ish = new Date();
+          console.log(season);
+          if (season =='f')
+          {
+            this.cur_season = "Fall" + " " + ish.getFullYear();
+          }
+
+          else if (season =='w')
+          {
+            this.cur_season = "Winter"+ " " + ish.getFullYear();;
+          }
+
+          else if (season =='sp')
+          {
+            this.cur_season = "Spring"+ " " + ish.getFullYear();;
+          }
+          else if (season =='su')
+          {
+            this.cur_season = "Summer"+ " " + ish.getFullYear();;
+          }
+
+          var formdata = {season: this.real_season}
+          var promise = $.ajax({
+            type: "POST",
+            data: formdata,
+            url: "http://localhost:3000/api/getGames",
+
+           });
+
+           promise.then(newstuff => {
+             console.error("CALLED THE GET GAMES API!!!!!!!");
+               console.log(newstuff);
+               this.games = newstuff;
+
+           });
+
+
+           var promise2 = $.ajax({
+             type: "GET",
+             url: "http://localhost:3000/api/getUsers",
+
+            });
+
+            promise2.then(newstuff => {
+                //console.error("Got the profile info back! ")
+                console.error("CALLED THE GET USERS API!!!!!!!");
+                  console.log(newstuff);
+                  this.users = newstuff;
+            });
+
+            var promise3 = $.ajax({
+              type: "POST",
+              data: {season: this.real_season},
+              url: "http://localhost:3000/api/getTeams",
+
+             });
+
+             promise3.then(newstuff => {
+                 //console.error("Got the profile info back! ")
+                 console.error("CALLED THE GET TEAMS API!!!!!!!");
+                   console.log(newstuff);
+                   this.teams = newstuff;
+
+             });
+
+
+
+
+
+
+         }
+
+
+
+    });
+  </script>
+</dom-module>

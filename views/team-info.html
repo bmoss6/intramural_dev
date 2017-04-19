@@ -1,0 +1,321 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+ <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+ <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link href="https://fonts.googleapis.com/css?family=Rubik+Mono+One" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
+<dom-module id="team-info">
+  <template>
+    <style include="shared-styles">
+#welcome{
+  text-align: center;
+}
+#header{
+  text-align: center;
+  font-size: 300%;
+}
+#season{
+  text-align: center;
+
+}
+#picture{
+  position: relative;
+  margin: auto;
+  left: 45%;
+  padding: 10px;
+}
+#validate {
+  display: none;
+}
+.centerim {
+  margin: auto;
+     width: 50%;
+
+     padding: 10px;
+}
+table, th, td {
+   border: 1px solid black;
+}
+ul{
+    font-family: 'Oxygen', sans-serif;
+    font-size: 1.2em; /* 30px/16=1.875em */
+}
+#teamheader
+{
+  font-size: 1.5em; /* 30px/16=1.875em */
+}
+#roster_head
+{
+  text-align: center;
+}
+#teamp{
+  background-color: #d3d3d3;
+}
+#rost{
+  background-color: white;
+}
+    </style>
+
+    <div id = "teamp" class="card">
+
+      <h1 id ="header"><b>My Teams<b></h1>
+        <h2 id="season">{{cur_season}}</h2>
+        <paper-tabs selected={{selected}}>
+        <template is="dom-repeat" items="{{teams}}">
+           <paper-tab>{{item.teamname}}</paper-tab>
+       </template>
+     </paper-tabs>
+     <iron-pages selected={{selected}} on-iron-select="_pageSelected">
+     <template is="dom-repeat" items="{{teamandroster}}">
+        <div id="rost">
+          <h2 id="teamheader"><u>{{item.teaminfo.teamname}} Information</u></h2>
+           <span id="validate" on-click="validateCaptain">Click Here</span>
+          <ul>
+            <li>Team ID: {{item.teaminfo.teamid}}</li>
+              <li>Sport: {{item.teaminfo.sport}}</li>
+              <li>Category: {{item.teaminfo.category}}</li>
+              <li>Division: {{item.teaminfo.division}}</li>
+              <li>Season: {{item.teaminfo.season}}</li>
+              <li>Wins: {{item.teaminfo.win}}</li>
+              <li>Loss: {{item.teaminfo.loss}}</li>
+              <li>Current Ranking: {{item.teaminfo.ranking}}</li>
+              <li>Captains: {{item.teaminfo.captains}}</li>
+              <h2  id="roster_head" class="centerim">Roster </h2>
+                <table class="centerim">
+                <tr>
+
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>NetID</th>
+  </tr>
+
+              <template is="dom-repeat" items="{{item.rosterinfo}}">
+                <tr>
+                <td>{{item.first_name}}</td>
+                <td>{{item.last_name}}</td>
+                <td>{{item.netid}}</td>
+                <tr>
+              </template>
+
+
+          </table>
+
+          </ul>
+          <template is="dom-if" if="{{isCap}}">
+
+            <paper-button  raised trigger-for="dialog1" on-click="_openDialogByTrigger">Add Player</paper-button>
+          </template>
+          <paper-dialog  id="dialog1">
+
+            <h2 id="edit_prof"><u>Add Player</u></h2>
+            <form is="iron-form" on-iron-form-respone="formResponse" id="edituser" method="post" action="/api/addplayer">
+
+              <paper-input name="netid" label="NetID" required auto-validate char-counter minlength="3" error-message="Please Enter Valid NetID"></paper-input>
+               <br>
+            <input name="teamid" label="TeamID" value = {{item.teaminfo.teamid}} required readonly></input>
+
+
+           <paper-button raised onclick="_submit(event)">Add Player</paper-button>
+
+            </form>
+
+
+          </paper-dialog>
+
+
+
+
+
+
+
+        </div>
+      </iron-pages>
+    </template>
+    </div>
+
+
+<div>
+    <iron-ajax auto
+            id="requestRepos"
+            url="http://localhost:3000/api/getTeam"
+            handle-as="json"
+            on-response = "handleResponse"
+        </iron-ajax>
+
+</div>
+<script>
+function _submit(event) {
+Polymer.dom(event).localTarget.parentElement.submit();
+}
+</script>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'team-info',
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+        name: String,
+        id: String,
+        lastname: String,
+        teams: [],
+        rosters: [],
+        teamandroster: [],
+        cur_season: String,
+        isCap: Boolean,
+        isSup: Boolean,
+        isOfficial: Boolean
+
+      },
+      _pageSelected: function(e) {
+           var page = e.detail.item;
+           console.log(e);
+           console.log(this.$$('iron-selected'));
+           console.log('page selected', page);
+
+            this.$$('#validate').click();
+
+
+
+         },
+      validateCaptain: function(e) {
+
+        console.log('This is the current captains');
+        var cur_captain = e.model.item.teaminfo.captains;
+
+        console.log(cur_captain);
+        console.log("This should be the id");
+        console.log(this.id);
+      var pos =  cur_captain.indexOf(this.id);
+      console.log(pos);
+      if(pos!=-1)
+      {
+        console.log("Captain Match!");
+        this.isCap = true;
+      }
+      else
+      {
+        this.isCap = null;
+      }
+
+      },
+      _openDialogByTrigger: function(event) {
+        console.log("Hello");
+          var dialogId = event.target.getAttribute('trigger-for');
+          // get dialog by id in the shadow root
+          console.log(this.$$('#dialog1'));
+          this.$$('#dialog1').open();
+      },
+
+        ready: function ()
+        {
+
+           console.log("in ready function");
+           this.$.requestRepos.generateRequest();
+
+          //    console.log("After request ");
+            //  console.log(z);
+         },
+         validate: function (info)
+         {
+           console.err(info);
+         },
+
+       handleResponse: function (data)
+       {
+          console.log("got the teams!");
+          console.log(data.detail.response);
+          console.log("Here should be the rosters");
+          console.log(data.detail.response.final_rosters1);
+          this.teams = data.detail.response.finishedstuff;
+          this.rosters = data.detail.response.final_rosters1;
+          var fallstring = data.detail.response.cur_season;
+          var season = fallstring.substring(0,1);
+          var ish = new Date();
+          console.log(season);
+          if (season =='f')
+          {
+            this.cur_season = "Fall" + " " + ish.getFullYear();
+          }
+
+          else if (season =='w')
+          {
+            this.cur_season = "Winter"+ " " + ish.getFullYear();;
+          }
+
+          else if (season =='sp')
+          {
+            this.cur_season = "Spring"+ " " + ish.getFullYear();;
+          }
+          else if (season =='su')
+          {
+            this.cur_season = "Summer"+ " " + ish.getFullYear();;
+          }
+
+          var doneitarray = [];
+          for(var x=0; x<this.teams.length; x++)
+          {
+            var team_roster = new Object();
+            team_roster.teaminfo = this.teams[x];
+            team_roster.rosterinfo = this.rosters[x];
+            doneitarray.push(team_roster);
+          }
+          console.log("^^^^^^^^^^^^^^^^^^^^^^");
+          this.teamandroster = doneitarray;
+
+          var promise = $.ajax({
+            type: "GET",
+            url: "http://localhost:3000/api/getprofile",
+
+           });
+
+           promise.then(newstuff => {
+               //console.error("Got the profile info back! ")
+               var roles = [];
+              roles  = newstuff.roles;
+              this.id = newstuff.netid;
+              // console.log(this.roles);
+               if(roles.indexOf("supervisor")!=-1)
+               {
+                 this.isSup = true;
+               }
+               if(roles.indexOf("official")!=-1)
+               {
+                 this.isOfficial = true;
+               }
+
+
+           });
+
+
+
+
+         }
+
+
+
+    });
+  </script>
+</dom-module>

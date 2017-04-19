@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+<!--
+	Helios by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Y Intramural</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="./views/assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<style>
+	#signitup{
+		background-color: rgba(255, 0, 0, 0.5);
+	}
+	#useradd{
+
+	}
+	</style>
+	<body class="homepage">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<div id="header">
+
+					<!-- Inner -->
+						<div class="inner">
+							<header>
+								<h1>Welcome to Y Intramurals</h1>
+
+
+							</header>
+							<footer>
+						<button type="button" id="signin" data-toggle="modal" data-target="#empmodal">Sign In </button>
+						<button type="button" id="signupbut" data-toggle="modal" data-target="#climodal">Sign Up</button>
+							</footer>
+						</div>
+
+						<div class="container">
+		          <!-- Modal -->
+		          <div class="modal fade" id="empmodal" role="dialog">
+		            <div class="modal-dialog">
+		  <!--Copyright (c) 2017 by Mohan Khadka (http://codepen.io/khadkamhn/pen/ZGvPLo) -->
+		              <div class="login-wrap">
+
+			<div class="login-html">
+		    <h2> <u>Sign In</u></h2><br>
+				<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+				<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
+				<div class="login-form">
+					<div class="sign-in-htm">
+		        <form action = "/login" method ="post">
+
+						<div class="group">
+							<label for="user" class="label">Netid</label>
+							<input name="username" id="username" type="text" class="input">
+						</div>
+						<div class="group">
+							<label for="pass" class="label">Password</label>
+							<input id="password" name="password" type="password" class="input" data-type="password">
+						</div>
+						<div class="group">
+							<input type="submit" class="button" value="Sign In">
+						</div>
+
+						<div class="foot-lnk">
+							<a href="#forgot">Forgot Password?</a><br>
+		          <a href="http://codepen.io/khadkamhn/pen/ZGvPLo">Design by Mohan Khadka</a>
+						</div>
+
+		      </form>
+
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+		              </div>
+
+		            </div>
+		          </div>
+
+							<div class="container">
+							          <!-- Modal -->
+							          <div class="modal fade" id="climodal" role="dialog">
+							            <div class="modal-dialog">
+
+
+
+
+							    <div class="container">
+
+							        <div class="login-wrap">
+
+							      	<div class="login-form" id ="signitup">
+							          <h2> <u> Signup </u></h2>
+							          <form id="signup" onsubmit="adduser()">
+													<div class="group">
+													 <label for="user" class="label">First Name</label>
+													 <input id="user" name="first_name" type="text" class="input" required>
+												 </div>
+												 <div class="group">
+													 <label for="user" class="label">Last Name</label>
+													 <input id="user" name="last_name" type="text" class="input" required>
+												 </div>
+							          <div class="group">
+							  					<label for="user" class="label">Username</label>
+							  					<input id="user" name="username" type="text" class="input" required>
+							  				</div>
+												<div class="group">
+													<label for="pass" class="label">Date of Birth</label>
+													<input id="pass" name ="dob" type="date" class="input" data-type="date" required>
+												</div>
+												<div class="group">
+													<label for="pass" class="label">Email</label>
+													<input id="pass" name ="email" type="email" class="input" required>
+												</div>
+							          <div class="group">
+							            <label for="pass" class="label">Password</label>
+							            <input id="pass" name ="pass" type="password" class="input" data-type="password" required>
+							          </div>
+												<div class="group">
+													<label for="pass" class="label">Repeat Password</label>
+													<input id="pass" name ="rpassword" type="password" class="input" data-type="password" required>
+												</div>
+							          <div class="group">
+							            <input type="submit" class="button" value="Sign Up">
+							          </div>
+							        </form>
+							          <div class="hr"></div>
+							          <div class="foot-lnk">
+							            <a href="#forgot">Forgot Password?</a><br>
+							            <a href="http://codepen.io/khadkamhn/pen/ZGvPLo">Design by Mohan Khadka</a>
+							          </div>
+							    </div>
+
+
+							</div>
+							</div>
+							            </div>
+							          </div>
+
+							        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li><a href="index.html">Home</a></li>
+								<li>
+									<a href="#">Activities</a>
+									<ul>
+										<li>
+											<a href="#">Fall</a>
+											<ul>
+												<li><a href="#">Flag Football</a></li>
+												<li><a href="#">Soccer</a></li>
+												<li><a href="#">Kickball</a></li>
+												<li><a href="#">Ultimate</a></li>
+												<li><a href="#">Volleyball</a></li>
+												<li><a href="#">Basketball</a></li>
+												<li><a href="#">Tennis Singles</a></li>
+												<li><a href="#">Golf Scramble</a></li>
+												<li><a href="#">Racquetball Singles</a></li>
+												<li><a href="#">Tennis Doubles</a></li>
+												<li><a href="#">3v3 Baskbetball</a></li>
+												<li><a href="#">Golf Scramble</a></li>
+												<li><a href="#">Racquetball Doubles</a></li>
+												<li><a href="#">Badminton Singles</a></li>
+												<li><a href="#">Tennis Doubles</a></li>
+												<li><a href="#">Raquetball Doubles</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href="#">Winter</a>
+											<ul>
+												<li><a href="#">Lorem ipsum dolor</a></li>
+												<li><a href="#">Phasellus consequat</a></li>
+												<li><a href="#">Magna phasellus</a></li>
+												<li><a href="#">Etiam dolore nisl</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href="#">Spring/Summer</a>
+											<ul>
+												<li><a href="#">Lorem ipsum dolor</a></li>
+												<li><a href="#">Phasellus consequat</a></li>
+												<li><a href="#">Magna phasellus</a></li>
+												<li><a href="#">Etiam dolore nisl</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="left-sidebar.html">About</a>
+									<ul>
+										<li><a href="#">History</a></li>
+										<li><a href="#">Mission & Vision</a></li>
+										<li>
+											<a href="#">Activity Information</a>
+											<ul>
+												<li><a href="#">Program Supervision</a></li>
+												<li><a href="#">Liability</a></li>
+												<li><a href="#">Awards</a></li>
+												<li><a href="#">Field Maps</a></li>
+											</ul>
+										</li>
+										<li><a href="#">Registration</a></li>
+										<li><a href="#">Contact Us</a></li>
+									</ul>
+								</li>
+
+								<li><a href="right-sidebar.html">General Information</a></li>
+
+							</ul>
+						</nav>
+
+
+
+						<script>
+
+
+
+
+					document.querySelector('#signup').onsubmit = function (evt) {
+    							evt.preventDefault();
+									console.log("Got HERE!!!")
+
+									console.log($("#signup").serialize());
+									var data1 = $("#signup").serialize();
+
+
+									var promise = $.ajax({
+										type: "POST",
+										url: "http://localhost:3000/api/adduser",
+										data: data1
+									 });
+
+									 promise.then(newstuff => {
+
+										 console.log("This! ");
+										 console.warn(newstuff);
+										 if(newstuff != "Success")
+										 {
+
+
+
+											 alert("That UserID is taken! Please Register with another.")
+										 }
+										 else
+										 {
+											  console.log( $("#climodal"));
+												$('#signup').trigger("reset");
+											 $('#signupbut').trigger('click');
+											 alert("User Created!");
+										 }
+
+									 });
+									/*
+									Do an ajax call here to  and recieve the response
+									*/
+
+
+						};
+
+
+						</script>
+
+				</div>
+
+
+
+				</div>
+
+		<!-- Scripts -->
+			<script src="./views/assets/js/jquery.min.js"></script>
+			<script src="./views/assets/js/jquery.dropotron.min.js"></script>
+			<script src="./views/assets/js/jquery.scrolly.min.js"></script>
+			<script src="./views/assets/js/jquery.onvisible.min.js"></script>
+			<script src="./views/assets/js/skel.min.js"></script>
+			<script src="./views/assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="./views/assets/js/main.js"></script>
+
+	</body>
+</html>

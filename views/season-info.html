@@ -1,0 +1,256 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+ <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+ <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="season-info">
+  <template>
+    <style include="shared-styles">
+#welcome{
+  text-align: center;
+}
+#header{
+  text-align: center;
+  font-size: 300%;
+}
+#picture{
+  position: relative;
+  margin: auto;
+  left: 45%;
+  padding: 10px;
+}
+table, th, td {
+   border: 1px solid black;
+}
+    </style>
+    <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js">
+    </script>
+    </head>
+    <div class="card">
+
+      <h1 id ="header"><b>My Seasons<b></h1>
+        <h2 id="season">{{cur_season}}</h2>
+        <paper-tabs selected={{selected}}>
+        <template is="dom-repeat" items="{{finally_done}}">
+           <paper-tab>{{item.team.teamname}}</paper-tab>
+       </template>
+     </paper-tabs>
+
+     <iron-pages selected={{selected}}>
+     <template is="dom-repeat" items="{{finally_done}}">
+       <div>
+        <h2>{{item.team.teamname}}'s Schedule</h2>
+        <h2>Division: {{item.team.division}}</h2>
+        <table>
+        <tr>
+
+<th>Home Team</th>
+<th>Away Team</th>
+<th>Date</th>
+<th>Time</th>
+<th>Field</th>
+</tr>
+
+      <template is="dom-repeat" items="{{item.games}}">
+        <tr>
+        <td>{{item.homename}}</td>
+        <td>{{item.awayname}}</td>
+        <td>{{item.date}}</td>
+        <td>{{item.time}}</td>
+        <td>{{item.field_id}}</td>
+        <tr>
+      </template>
+
+
+  </table>
+
+
+
+       </div>
+     </template>
+      </iron-pages>
+
+
+
+<div>
+    <iron-ajax auto
+            id="requestRepos"
+            url="http://localhost:3000/api/getSeason"
+            handle-as="json"
+            on-response = "handleResponse"
+        </iron-ajax>
+</div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'season-info',
+      properties: {
+        selected: {
+          type: Boolean,
+        },
+        cur_season: String,
+        team_schedule: [],
+        finally_done: []
+      },
+
+        ready: function ()
+        {
+             console.log("in ready function");
+           this.$.requestRepos.generateRequest();
+
+          //    console.log("After request ");
+            //  console.log(z);
+         },
+
+       handleResponse: function (data)
+       {
+                       console.log("GOT THE SCHEDULE &&&&&&&&&&&");
+                       var team_sechob = [];
+                       var x = data.detail.response;
+                       var teams = x.teaminfo;
+                       var schedule = x.scheduleinfo;
+
+                       for(var y = 0; y<x.teaminfo.length; y++)
+                       {
+                         var teamschobject = new Object();
+                         teamschobject.team = teams[y];
+                         teamschobject.games = schedule[y];
+                         team_sechob.push(teamschobject);
+
+                       }
+                       this.team_schedule= team_sechob;
+                       console.log(this.team_schedule);
+                       var fallstring = data.detail.response.cur_season;
+                       var season = fallstring.substring(0,1);
+                       var ish = new Date();
+                       console.log(season);
+                       if (season =='f')
+                       {
+                         this.cur_season = "Fall" + " " + ish.getFullYear();
+                       }
+
+                       else if (season =='w')
+                       {
+                         this.cur_season = "Winter"+ " " + ish.getFullYear();;
+                       }
+
+                       else if (season =='sp')
+                       {
+                         this.cur_season = "Spring"+ " " + ish.getFullYear();;
+                       }
+                       else if (season =='su')
+                       {
+                         this.cur_season = "Summer"+ " " + ish.getFullYear();;
+                       }
+
+
+
+
+                         var promise = $.ajax({
+                           type: "POST",
+                           url: "http://localhost:3000/api/getTeamNames",
+                           data: {teamobject: this.team_schedule}
+                          });
+
+                          promise.then(newstuff => {
+                              console.warn("got the stuff back! ")
+                              console.warn(newstuff);
+                              console.warn(this.team_schedule);
+                              var newstuff = put_names_to_games(newstuff, this.team_schedule);
+                              console.warn(newstuff);
+                            var stew =  getfinalnames(this.team_schedule, newstuff);
+                            console.log(stew);
+                            this.finally_done = stew;
+                          });
+
+                          function put_names_to_games(gamearray, teams)
+                          {
+                            var new_games = [];
+                            for (var x = 0 ; x<gamearray.length; x ++)
+                            {
+                              if(gamearray[x]!=null)
+                              {
+                                  for( var y =0; y<teams.length; y ++)
+                                  {
+                                      for(var z = 0; z<teams[y].games.length; z++)
+                                      {
+                                      //  console.log(gamearray[x].gameid)
+                                          if(gamearray[x].gameid == teams[y].games[z].game_id)
+                                          {
+                                            console.log("Found a match!!");
+                                            teams[y].games[z].homename = gamearray[x].hometeam;
+                                            teams[y].games[z].awayname = gamearray[x].awayteam;
+                                            new_games.push(teams[y].games[z]);
+                                          }
+
+                                      }
+                                  }
+
+
+
+                              }
+
+
+
+                            }
+                            return new_games;
+
+                          }
+
+
+
+                          function getfinalnames (stuff, newstuff)
+                          {
+                            console.log("IN THE FINAL FUNCTION");
+                            console.warn(stuff);
+                            console.warn(newstuff);
+                            var finarray = [];
+                            for (x = 0; x<stuff.length; x++)
+                            {
+                              var tem = new Object();
+                              tem.team = stuff[x].team;
+                              tem.games = [];
+                              for( y = 0 ;y<newstuff.length; y ++)
+                              {
+                                if(stuff[x].team.teamname ==newstuff[y].homename || stuff[x].team.teamname ==newstuff[y].awayname )
+                                {
+                                  tem.games.push(newstuff[y]);
+                                }
+
+
+                              }
+                              console.log("HERE IS TEM");
+                              console.log(tem);
+                              finarray.push(tem);
+                            }
+
+                              return finarray;
+
+                          }
+
+
+
+
+
+
+        }
+
+    });
+  </script>
+</dom-module>

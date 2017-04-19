@@ -133,6 +133,27 @@ res.status('200').send("Success");
 
 });
 
+router.route('/removeplayer').post(function (req, res) {
+
+teaminfo.updateremoveTeam(req.body.teamid,req.body.netid)
+.then(result => {
+  console.log(result);
+res.header("Access-Control-Allow-Origin", "*");
+
+res.status('200').send("Success");
+ })
+.catch(error => {
+
+  console.log(error);
+
+  res.status('200').send("Net ID Taken");
+
+
+});
+
+
+});
+
 router.route('/getTeamNames').post(function (req, res) {
 console.log(req.body)
 console.log("Hit it!")

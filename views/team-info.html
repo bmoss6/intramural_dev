@@ -123,11 +123,13 @@ ul{
           <template is="dom-if" if="{{isCap}}">
 
             <paper-button  raised trigger-for="dialog1" on-click="_openDialogByTrigger">Add Player</paper-button>
+            <paper-button  raised trigger-for="dialog2" on-click="_openDialog2ByTrigger">Remove Player</paper-button>
+
           </template>
           <paper-dialog  id="dialog1">
 
             <h2 id="edit_prof"><u>Add Player</u></h2>
-            <form is="iron-form" on-iron-form-respone="formResponse" id="edituser" method="post" action="/api/addplayer">
+            <form is="iron-form" on-iron-form-respone="formResponse" id="adduser" method="post" action="/api/addplayer">
 
               <paper-input name="netid" label="NetID" required auto-validate char-counter minlength="3" error-message="Please Enter Valid NetID"></paper-input>
                <br>
@@ -135,6 +137,22 @@ ul{
 
 
            <paper-button raised onclick="_submit(event)">Add Player</paper-button>
+
+            </form>
+
+
+          </paper-dialog>
+          <paper-dialog  id="dialog2">
+
+            <h2 id="edit_prof"><u>Remove Player</u></h2>
+            <form is="iron-form" on-iron-form-respone="formResponse" id="removeuser" method="post" action="/api/removeplayer">
+
+              <paper-input name="netid" label="NetID" required auto-validate char-counter minlength="3" error-message="Please Enter Valid NetID"></paper-input>
+               <br>
+            <input name="teamid" label="TeamID" value = {{item.teaminfo.teamid}} required readonly></input>
+
+
+           <paper-button raised onclick="_submit1(event)">Remove Player</paper-button>
 
             </form>
 
@@ -164,6 +182,9 @@ ul{
 </div>
 <script>
 function _submit(event) {
+Polymer.dom(event).localTarget.parentElement.submit();
+}
+function _submit1(event) {
 Polymer.dom(event).localTarget.parentElement.submit();
 }
 </script>
@@ -200,6 +221,10 @@ Polymer.dom(event).localTarget.parentElement.submit();
 
 
          },
+         formResponse: function(e) {
+        console.log("HELLO!");
+        console.log(e.detail.response);
+     },
       validateCaptain: function(e) {
 
         console.log('This is the current captains');
@@ -228,9 +253,23 @@ Polymer.dom(event).localTarget.parentElement.submit();
           console.log(this.$$('#dialog1'));
           this.$$('#dialog1').open();
       },
+      _openDialog2ByTrigger: function(event) {
+        console.log("Hello");
+          var dialogId = event.target.getAttribute('trigger-for');
+          // get dialog by id in the shadow root
+          console.log(this.$$('#dialog1'));
+          this.$$('#dialog2').open();
+      },
 
         ready: function ()
         {
+          this.async(function(){
+    this.querySelector('#adduser');
+    this.$$('#adduser');
+    //this.$$('#adduser').addEventListener('iron-form-response',this.formResponse);
+    // this.$$('#adduser').addEventListener('iron-form-error',this.formError);
+
+    }.bind(this), 50);
 
            console.log("in ready function");
            this.$.requestRepos.generateRequest();
@@ -238,6 +277,10 @@ Polymer.dom(event).localTarget.parentElement.submit();
           //    console.log("After request ");
             //  console.log(z);
          },
+         formResponse: function (e){
+                    console.log("Server Response: ",e.detail);
+                      this.$$('#dialog1').close();
+},
          validate: function (info)
          {
            console.err(info);

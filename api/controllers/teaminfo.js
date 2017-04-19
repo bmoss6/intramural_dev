@@ -184,9 +184,37 @@ tryarray.push(push);
     console.log(userid);
     return new Promise( function(resolve,reject){
       Team.update({"teamid": teamid},{$push: {roster: userid}}, function(err,team){
-
+      userinfo.updateTeam(teamid,userid)
+      .then(stuff =>{
         resolve(team);
         reject(err);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+
+
+      })
+    })
+
+
+  }
+
+  teaminfo.updateremoveTeam = function (teamid,userid)
+  {
+    console.log(teamid);
+    console.log(userid);
+    return new Promise( function(resolve,reject){
+      Team.update({"teamid": teamid},{$pull: {'roster': userid}}, function(err,team){
+      userinfo.updateremoveTeam(teamid,userid)
+      .then(stuff => {
+        resolve(team);
+        reject(err);
+      })
+      .catch(error => {
+        console.log(error);
+      })
 
 
       })

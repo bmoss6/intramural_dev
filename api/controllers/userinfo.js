@@ -32,6 +32,41 @@ User.find({ },('netid first_name last_name dob email team_ids'), function (err, 
 }
 
 
+
+userinfo.updateTeam = function (teamid,userid)
+{
+  console.log(teamid);
+  console.log(userid);
+  return new Promise( function(resolve,reject){
+    User.update({"netid": userid},{$push: {team_ids: teamid}}, function(err,user){
+
+      resolve(user);
+      reject(err);
+
+
+    })
+  })
+
+
+}
+
+userinfo.updateremoveTeam = function (teamid,userid)
+{
+  console.log(teamid);
+  console.log(userid);
+  return new Promise( function(resolve,reject){
+    User.update({"netid": userid},{$pull: {'team_ids': teamid}}, function(err,team){
+
+      resolve(team);
+      reject(err);
+
+
+    })
+  })
+
+
+}
+
 userinfo.authenticate = function (netid,password)
 {
 
